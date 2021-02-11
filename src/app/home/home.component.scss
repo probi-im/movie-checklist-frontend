@@ -1,0 +1,69 @@
+mat-grid-list {
+  margin: 0 auto;
+  max-width: 1000px;
+}
+mat-grid-tile {
+  border-radius: 1rem;
+  transition: 0.15s transform ease;
+  background-position: center;
+
+  .content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    pointer-events: none;
+
+    .title {
+      font-size: 2rem;
+    }
+  }
+
+  .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.15s opacity ease;
+
+    mat-icon {
+      color: white;
+      width: 8rem;
+      height: 8rem;
+      font-size: 8rem;
+    }
+    mat-icon.unwatch {
+      display: none;
+    }
+  }
+
+  &:hover {
+    transform: scale3d(1.05, 1.05, 1);
+    cursor: pointer;
+    .overlay {
+      opacity: 0.4;
+    }
+  }
+}
+mat-grid-tile.watched {
+  .overlay {
+    opacity: 1;
+  }
+  &:hover {
+    mat-icon.watch {
+      display: none;
+    }
+    mat-icon.unwatch {
+      display: inline-block;
+    }
+  }
+}
