@@ -1,6 +1,31 @@
 <mat-toolbar>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+  <button
+    mat-icon-button
+    class="example-icon"
+    aria-label="Example icon-button with menu icon"
+  >
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Movie Checklists</span>
+  <a
+    class="brand"
+    [routerLink]="['/home']"
+    routerLinkActive="router-link-active"
+  >
+    Movie Checklist</a
+  >
+  <div class="buttons">
+    <a
+      mat-stroked-button
+      [routerLink]="['/login']"
+      routerLinkActive="router-link-active"
+      >Login</a
+    >
+    <a
+      mat-stroked-button
+      [routerLink]="['/register']"
+      routerLinkActive="router-link-active"
+      >Register</a
+    >
+    <!-- <a mat-stroked-button [routerLink]="['/logout']" routerLinkActive="router-link-active" >Logout</a> -->
+  </div>
 </mat-toolbar>

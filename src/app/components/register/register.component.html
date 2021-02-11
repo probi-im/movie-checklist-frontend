@@ -1,0 +1,28 @@
+<div class="container">
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <h1>Register</h1>
+    <mat-form-field appearance="outline">
+      <mat-label>Email address</mat-label>
+      <input
+        matInput
+        [formControl]="emailControl"
+        type="email"
+        placeholder="Enter your email address"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        [formControl]="passwordControl"
+        type="password"
+        placeholder="Enter your password"
+        required
+      />
+    </mat-form-field>
+    <button mat-flat-button type="submit" [disabled]="!form.form.valid">
+      Login
+    </button>
+  </form>
+</div>
