@@ -1,13 +1,26 @@
 <div class="container">
-<mat-grid-list [cols]="colNumber" rowHeight="500px" gutterSize="50">
-  <mat-grid-tile *ngFor="let movie of movies; let index = index" [style.background-image]="'url('+movie.coverUrl+')'" [class.watched]="movie.watched" (click)="toggle(index)">
-    <div class="content">
-      <div class="title">{{movie.title}}</div>
-    </div>
-    <div class="overlay">
-      <mat-icon class="watch">visibility</mat-icon>
-      <mat-icon class="unwatch">visibility_off</mat-icon>
-    </div>
-  </mat-grid-tile>
-</mat-grid-list>
+  <div *ngIf="loadingUserData" class="loading">
+    <h1>Loading your data...</h1>
+  </div>
+  <mat-grid-list
+    *ngIf="!loadingUserData"
+    [cols]="colNumber"
+    rowHeight="500px"
+    gutterSize="50"
+  >
+    <mat-grid-tile
+      *ngFor="let movie of movies"
+      [style.background-image]="'url(' + movie.coverUrl + ')'"
+      [class.watched]="userMovies.includes(movie.id)"
+      (click)="toggle(movie.id)"
+    >
+      <div class="content">
+        <div class="title">{{ movie.title }}</div>
+      </div>
+      <div class="overlay">
+        <mat-icon class="watch">visibility</mat-icon>
+        <mat-icon class="unwatch">visibility_off</mat-icon>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
 </div>

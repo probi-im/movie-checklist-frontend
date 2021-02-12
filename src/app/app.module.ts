@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +16,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ErrorInterceptor, JwtInterceptor } from './_helpers';
 
 const materialModules = [MatToolbarModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule];
 
@@ -28,7 +29,14 @@ const materialModules = [MatToolbarModule, MatIconModule, MatButtonModule, MatFo
     BrowserAnimationsModule,
     ...materialModules,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

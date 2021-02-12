@@ -20,19 +20,27 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
+  storeUser() {
+    localStorage.setItem('currentUser', JSON.stringify(this.currentUserValue));
+  }
+
   login(email: string, password: string) {
-    return this.http.post<any>(`${environment.apiUrl}/auth/login`, { email, password })
+    return this.http.post<User>(`${environment.apiUrl}/auth/login`, { email, password })
       .pipe(map(response => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        const user: User = {
-          id: response.data.user.id,
-          email: '',
-          data: response.data.user.data,
-          token: response.data.token
-        }
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        return user;
+        this.currentUserSubject.next(response);
+        this.storeUser()
+        return response;
+      }));
+  }
+
+  register(email: string, password: string) {
+    return this.http.post<User>(`${environment.apiUrl}/auth/register`, { email, password })
+      .pipe(map(response => {
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        this.currentUserSubject.next(response);
+        this.storeUser()
+        return response;
       }));
   }
 
