@@ -5,10 +5,12 @@
 }
 .buttons {
   margin-left: auto;
-  a {
+  a,
+  button {
     text-transform: uppercase;
   }
-  a:not(:first-of-type) {
-    margin-left: 1rem;
+  a:not(:last-child),
+  button:not(:last-child) {
+    margin-right: 1rem;
   }
 }

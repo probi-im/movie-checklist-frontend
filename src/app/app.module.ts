@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,7 +23,7 @@ const materialModules = [MatToolbarModule, MatIconModule, MatButtonModule, MatFo
   declarations: [AppComponent, HeaderComponent, RegisterComponent, LoginComponent],
   imports: [
     BrowserModule,
-    FormsModule, ReactiveFormsModule,
+    FormsModule, ReactiveFormsModule, HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     ...materialModules,
