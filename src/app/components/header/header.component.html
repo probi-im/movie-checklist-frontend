@@ -15,17 +15,19 @@
   >
   <div class="buttons">
     <a
+      *ngIf="!user"
       mat-stroked-button
       [routerLink]="['/login']"
       routerLinkActive="router-link-active"
       >Login</a
     >
     <a
+      *ngIf="!user"
       mat-stroked-button
       [routerLink]="['/register']"
       routerLinkActive="router-link-active"
       >Register</a
     >
-    <button mat-stroked-button (click)="logout()">Logout</button>
+    <button *ngIf="user" mat-stroked-button (click)="logout()">Logout</button>
   </div>
 </mat-toolbar>

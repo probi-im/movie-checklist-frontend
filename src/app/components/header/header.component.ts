@@ -19,5 +19,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login'])
   }
 
+  public get user() {
+    return this.authenticationService.currentUserValue;
+  }
 
 }
