@@ -3,32 +3,25 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "ng start",
     "build": "ng build",
+    "deploy": "ng build --prod && firebase deploy",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "heroku-postbuild": "ng build --aot --prod"
-  },
-  "engines": {
-    "node": "15.0.1",
-    "npm": "6.14.11"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "~11.1.2",
     "@angular/cdk": "^11.2.0",
-    "@angular/cli": "~11.1.4",
     "@angular/common": "~11.1.2",
     "@angular/compiler": "~11.1.2",
-    "@angular/compiler-cli": "~11.1.2",
     "@angular/core": "~11.1.2",
     "@angular/forms": "~11.1.2",
     "@angular/material": "^11.2.0",
     "@angular/platform-browser": "~11.1.2",
     "@angular/platform-browser-dynamic": "~11.1.2",
     "@angular/router": "~11.1.2",
-    "express": "^4.17.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "typescript": "~4.1.2",
@@ -36,10 +29,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1101.4",
+    "@angular/cli": "~11.1.4",
+    "@angular/compiler-cli": "~11.1.2",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
-    "enhanced-resolve": "^5.7.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.2.0",
