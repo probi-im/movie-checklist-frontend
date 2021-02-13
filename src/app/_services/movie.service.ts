@@ -7,9 +7,13 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class MovieService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getPopularMovies(page: number) {
     return this.http.get<any[]>(`${environment.apiUrl}/movies/popular/${page}`);
+  }
+
+  searchMovies(search: string) {
+    return this.http.get<any[]>(`${environment.apiUrl}/movies/search/${search}`);
   }
 }

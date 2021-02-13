@@ -17,16 +17,24 @@
   }
 }
 .search {
-  margin: 0 auto;
-
-  mat-form-field {
-    width: 100%;
+  form {
+    display: flex;
+    align-items: center;
     margin-bottom: 1rem;
+
+    mat-form-field {
+      flex: 1;
+    }
+    button {
+      margin-left: 1rem;
+      line-height: 3rem;
+      font-size: 1.3rem;
+    }
   }
 }
-mat-grid-list {
-  margin: 0 auto;
-}
+// mat-grid-list {
+//   margin: 0 auto;
+// }
 mat-grid-tile {
   border-radius: 1rem;
   transition: 0.15s transform ease;
@@ -45,7 +53,7 @@ mat-grid-tile {
       padding: 1rem;
       background: #fffb;
       color: black;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       line-height: 1.8rem;
       font-weight: bold;
     }

@@ -1,12 +1,12 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { AuthenticationService, UserService } from '../_services';
-import { first } from 'rxjs/operators';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { MovieService } from '../_services/movie.service';
 import { FormControl } from '@angular/forms';
 
-const MAX_PAGE_COUNT = 5;
+const MAX_PAGE_COUNT = 3;
 
 @Component({
   selector: 'app-home',
@@ -14,9 +14,8 @@ const MAX_PAGE_COUNT = 5;
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  private _layoutSubscriber: Subscription;
-
   movies: Array<any> = [];
+  filteredMovies = this.movies;
   colNumber: number = 3;
 
   loadingUserData = true;
@@ -28,6 +27,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   searchControl = new FormControl('');
 
   autoLoadMovies = true;
+
+  refreshingMovieList = true;
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
+
+  inputTimeout: any;
+
+  currentMovieListType: 'popular' | 'search' = 'popular';
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -41,7 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       Breakpoints.Large,
       Breakpoints.XLarge,
     ]);
-    this._layoutSubscriber = layoutChanges.subscribe((result) => {
+    layoutChanges.pipe(takeUntil(this.destroy$)).subscribe((result) => {
       if (result.matches) {
         if (result.breakpoints[Breakpoints.Small]) {
           this.colNumber = 2;
@@ -56,10 +63,23 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.colNumber = 1;
       }
     });
+    this.searchControl.valueChanges.pipe(takeUntil(this.destroy$)).pipe(map((rawSearch: string) => rawSearch.trim().toLowerCase())).subscribe((search: any) => {
+      clearTimeout(this.inputTimeout);
+      this.inputTimeout = setTimeout(() => {
+        if (search === "") {
+          console.log('loading popular movies')
+          this.currentPage = 1;
+          this.loadPopularMovies();
+        } else {
+          console.log('search movies with search:', search);
+          this.searchMovies(search);
+        }
+      }, 500);
+    });
   }
 
   ngOnInit(): void {
-    this.loadMovies(this.currentPage);
+    this.loadPopularMovies();
     if (this.user)
       this.userService
         .getUserData(this.user.userId)
@@ -71,7 +91,52 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this._layoutSubscriber) this._layoutSubscriber.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+  loadPopularMovies(page: number = 1) {
+    if (this.loadingMovies) return;
+    if (page === 1) {
+      this.refreshingMovieList = true;
+      this.movies = [];
+    }
+    this.loadingMovies = true;
+    this.movieService
+      .getPopularMovies(page)
+      .pipe(first())
+      .subscribe(
+        (res) => {
+          this.movies = [...this.movies, ...res];
+          this.filteredMovies = this.movies;
+          this.currentMovieListType = 'popular';
+          this.firstLoadingMovies = false;
+          this.loadingMovies = false;
+          this.refreshingMovieList = false;
+        },
+        (error) => console.log(error)
+      );
+  }
+
+  searchMovies(search: string) {
+    if (search === "") return;
+    if (this.loadingMovies) return;
+    this.loadingMovies = true;
+    this.refreshingMovieList = true;
+    this.movieService
+      .searchMovies(search)
+      .pipe(first())
+      .subscribe(
+        (res) => {
+          this.movies = res;
+          this.filteredMovies = this.movies;
+          this.currentMovieListType = 'search';
+          this.firstLoadingMovies = false;
+          this.loadingMovies = false;
+          this.refreshingMovieList = false;
+        },
+        (error) => console.log(error)
+      );
   }
 
   loadMovies(page: number) {
@@ -83,12 +148,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       .subscribe(
         (res) => {
           this.movies = [...this.movies, ...res];
+          this.filteredMovies = this.movies;
           this.firstLoadingMovies = false;
           this.loadingMovies = false;
         },
         (error) => console.log(error)
       );
   }
+
+  // searchMovies();
 
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {
@@ -103,8 +171,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.currentPage === MAX_PAGE_COUNT
       )
         return;
-      this.currentPage += 1;
-      this.loadMovies(this.currentPage);
+      if (this.currentMovieListType === 'popular') {
+        this.currentPage += 1;
+        this.loadPopularMovies(this.currentPage);
+      }
     }
   }
 
@@ -129,13 +199,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  public get filteredMovies() {
-    return this.movies.filter((m) =>
-      m.title
-        .toLowerCase()
-        .includes(this.searchControl.value.trim().toLowerCase())
-    );
+  onSubmit() {
+    // this.searchControl.
+    // console.log(this.searchControl.value);
+    // const value = (this.searchControl.value || '').trim().toLowerCase();
+    // this.filteredMovies = this.movies.filter((m) =>
+    //   m.title.toLowerCase().includes(value)
+    // );
+    // this.searchControl.reset();
   }
+
+  // public get filteredMovies() {
+  //   return this.movies;
+  //   // return this.movies.filter((m) =>
+  //   //   m.title
+  //   //     .toLowerCase()
+  //   //     .includes(this.searchControl.value.trim().toLowerCase())
+  //   // );
+  // }
 
   public get user() {
     return this.authenticationService.currentUserValue;
