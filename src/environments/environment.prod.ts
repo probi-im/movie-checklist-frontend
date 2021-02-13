@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  apiUrl: 'https://movie-checklist.herokuapp.com',
+  production: true,
 };
