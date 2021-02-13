@@ -1,16 +1,27 @@
 <div class="container">
-  <div *ngIf="loadingUserData" class="loading">
+  <div class="search">
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        [formControl]="searchControl"
+        type="text"
+        placeholder="Search"
+      />
+    </mat-form-field>
+  </div>
+  <div *ngIf="loadingUserData || firstLoadingMovies" class="loading">
     <h1>Loading your data...</h1>
   </div>
   <mat-grid-list
-    *ngIf="!loadingUserData"
+    *ngIf="!loadingUserData && !firstLoadingMovies"
     [cols]="colNumber"
     rowHeight="500px"
     gutterSize="50"
   >
     <mat-grid-tile
-      *ngFor="let movie of movies"
-      [style.background-image]="'url(' + movie.coverUrl + ')'"
+      *ngFor="let movie of filteredMovies"
+      [style.background-image]="'url(' + movie.poster_path + ')'"
       [class.watched]="userMovies.includes(movie.id)"
       (click)="toggle(movie.id)"
     >

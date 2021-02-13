@@ -21,28 +21,43 @@ export class UserService {
   }
 
   getUserData(userId: string) {
-    return this.http.get<UserData>(`${environment.apiUrl}/users/${userId}`).pipe(map(response => {
-      this.currentUserDataSubject.next(response);
-      return response;
-    }))
+    return this.http
+      .get<UserData>(`${environment.apiUrl}/users/${userId}`)
+      .pipe(
+        map((response) => {
+          this.currentUserDataSubject.next(response);
+          return response;
+        })
+      );
   }
 
   watchMovie(userId: string, movieId: string) {
-    return this.http.post<UserData>(`${environment.apiUrl}/users/${userId}/watch`, { movieId }).pipe(map(response => {
-      this.currentUserDataSubject.next(response);
-      return response;
-    }))
+    return this.http
+      .post<UserData>(`${environment.apiUrl}/users/${userId}/watch`, {
+        movieId,
+      })
+      .pipe(
+        map((response) => {
+          this.currentUserDataSubject.next(response);
+          return response;
+        })
+      );
   }
 
   unwatchMovie(userId: string, movieId: string) {
-    return this.http.post<UserData>(`${environment.apiUrl}/users/${userId}/unwatch`, { movieId }).pipe(map(response => {
-      this.currentUserDataSubject.next(response);
-      return response;
-    }))
+    return this.http
+      .post<UserData>(`${environment.apiUrl}/users/${userId}/unwatch`, {
+        movieId,
+      })
+      .pipe(
+        map((response) => {
+          this.currentUserDataSubject.next(response);
+          return response;
+        })
+      );
   }
 
   clearData() {
-    this.currentUserDataSubject.next(null)
+    this.currentUserDataSubject.next(null);
   }
-
 }

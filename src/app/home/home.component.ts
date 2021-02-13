@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  BreakpointObserver,
-  Breakpoints,
-} from '@angular/cdk/layout';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { AuthenticationService, UserService } from '../_services';
 import { first } from 'rxjs/operators';
+import { MovieService } from '../_services/movie.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -19,12 +18,24 @@ export class HomeComponent implements OnInit, OnDestroy {
   colNumber: number = 3;
 
   loadingUserData = true;
+  firstLoadingMovies = true;
+  loadingMovies = false;
 
-  constructor(private authenticationService: AuthenticationService, private userService: UserService, breakpointObserver: BreakpointObserver) {
+  currentPage = 0;
+
+  searchControl = new FormControl('');
+
+  autoLoadMovies = false;
+
+  constructor(
+    private authenticationService: AuthenticationService,
+    private userService: UserService,
+    private movieService: MovieService,
+    breakpointObserver: BreakpointObserver
+  ) {
     const layoutChanges = breakpointObserver.observe([
       Breakpoints.Small,
       Breakpoints.Medium,
-      Breakpoints.Large,
       Breakpoints.XLarge,
     ]);
     this._layoutSubscriber = layoutChanges.subscribe((result) => {
@@ -34,67 +45,86 @@ export class HomeComponent implements OnInit, OnDestroy {
         } else if (result.breakpoints[Breakpoints.Medium]) {
           this.colNumber = 3;
         } else if (result.breakpoints[Breakpoints.XLarge]) {
-          this.colNumber = 3;
+          this.colNumber = 4;
         }
       } else {
-        this.colNumber = 1;
+        this.colNumber = 2;
       }
     });
   }
 
   ngOnInit(): void {
-    if (this.user) this.userService.getUserData(this.user.userId).pipe(first()).subscribe(_ => this.loadingUserData = false, error => console.log(error));
-    this.movies = [
-      {
-        id: 'qsdfqsd',
-        title: 'Movie 1',
-        coverUrl: 'https://images.unsplash.com/photo-1612971974363-75f8b0986b45?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-        watched: false,
-      },
-      {
-        id: 'gsdfgsdf',
-        title: 'Movie 2',
-        coverUrl: 'https://images.unsplash.com/photo-1612971974363-75f8b0986b45?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-        watched: true,
-      },
-      {
-        id: 'razrazer',
-        title: 'Movie 3',
-        coverUrl: 'https://images.unsplash.com/photo-1612971974363-75f8b0986b45?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-        watched: false,
-      },
-      {
-        id: 'vbncvbn',
-        title: 'Movie 4',
-        coverUrl: 'https://images.unsplash.com/photo-1612971974363-75f8b0986b45?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-        watched: false,
-      },
-      {
-        id: 'dqsfhgg',
-        title: 'Movie 5',
-        coverUrl: 'https://images.unsplash.com/photo-1612971974363-75f8b0986b45?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-        watched: true,
-      },
-      {
-        id: 'xvfqsdq',
-        title: 'Movie 6',
-        coverUrl: 'https://images.unsplash.com/photo-1612971974363-75f8b0986b45?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-        watched: false,
-      }
-    ]
+    this.loadMovies(true);
+    if (this.user)
+      this.userService
+        .getUserData(this.user.userId)
+        .pipe(first())
+        .subscribe(
+          (_) => (this.loadingUserData = false),
+          (error) => console.log(error)
+        );
   }
 
   ngOnDestroy(): void {
     if (this._layoutSubscriber) this._layoutSubscriber.unsubscribe();
   }
 
+  loadMovies(force: boolean = false) {
+    if (this.loadingMovies) return;
+    if (!this.autoLoadMovies && !force) return;
+    this.loadingMovies = true;
+    this.currentPage += 1;
+    this.movieService
+      .getPopularMovies(this.currentPage)
+      .pipe(first())
+      .subscribe(
+        (res) => {
+          this.movies = [...this.movies, ...res];
+          this.firstLoadingMovies = false;
+          this.loadingMovies = false;
+        },
+        (error) => console.log(error)
+      );
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll() {
+    const pos =
+      (document.documentElement.scrollTop || document.body.scrollTop) +
+      document.documentElement.offsetHeight;
+    const max = (document.documentElement.scrollHeight * 90) / 100;
+    if (pos >= max) {
+      this.loadMovies();
+    }
+  }
+
   toggle(movieId: string): void {
     if (!this.user) return;
     if (this.userMovies.includes(movieId)) {
-      this.userService.unwatchMovie(this.user.userId, movieId).pipe(first()).subscribe(_ => _, error => console.error(error));
+      this.userService
+        .unwatchMovie(this.user.userId, movieId)
+        .pipe(first())
+        .subscribe(
+          (_) => _,
+          (error) => console.error(error)
+        );
     } else {
-      this.userService.watchMovie(this.user.userId, movieId).pipe(first()).subscribe(_ => _, error => console.error(error));
+      this.userService
+        .watchMovie(this.user.userId, movieId)
+        .pipe(first())
+        .subscribe(
+          (_) => _,
+          (error) => console.error(error)
+        );
     }
+  }
+
+  public get filteredMovies() {
+    return this.movies.filter((m) =>
+      m.title
+        .toLowerCase()
+        .includes(this.searchControl.value.trim().toLowerCase())
+    );
   }
 
   public get user() {
@@ -104,5 +134,4 @@ export class HomeComponent implements OnInit, OnDestroy {
   public get userMovies() {
     return this.userService.currentUserDataValue?.watchedMovies || [];
   }
-
 }
