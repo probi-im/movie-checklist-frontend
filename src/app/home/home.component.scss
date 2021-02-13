@@ -1,6 +1,23 @@
+.tmdb-credit {
+  height: 4rem;
+  border: 1px solid #01b4e4;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+
+  a {
+    color: currentColor;
+  }
+
+  .logo {
+    margin: 0 1rem;
+    height: 1rem;
+  }
+}
 .search {
   margin: 0 auto;
-  max-width: 1400px;
 
   mat-form-field {
     width: 100%;
@@ -9,7 +26,6 @@
 }
 mat-grid-list {
   margin: 0 auto;
-  max-width: 1400px;
 }
 mat-grid-tile {
   border-radius: 1rem;

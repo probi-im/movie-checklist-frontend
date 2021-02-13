@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const layoutChanges = breakpointObserver.observe([
       Breakpoints.Small,
       Breakpoints.Medium,
+      Breakpoints.Large,
       Breakpoints.XLarge,
     ]);
     this._layoutSubscriber = layoutChanges.subscribe((result) => {
@@ -44,11 +45,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.colNumber = 2;
         } else if (result.breakpoints[Breakpoints.Medium]) {
           this.colNumber = 3;
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          this.colNumber = 3;
         } else if (result.breakpoints[Breakpoints.XLarge]) {
           this.colNumber = 4;
         }
       } else {
-        this.colNumber = 2;
+        this.colNumber = 1;
       }
     });
   }
