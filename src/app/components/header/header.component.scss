@@ -1,3 +1,10 @@
+mat-toolbar {
+  position: fixed;
+  top: 0;
+  z-index: 2021;
+  height: 4rem;
+}
+
 .brand {
   margin-left: 0.5rem;
   text-decoration: none;

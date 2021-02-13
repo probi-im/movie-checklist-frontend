@@ -6,6 +6,8 @@ import { first } from 'rxjs/operators';
 import { MovieService } from '../_services/movie.service';
 import { FormControl } from '@angular/forms';
 
+const MAX_PAGE_COUNT = 5;
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -21,11 +23,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   firstLoadingMovies = true;
   loadingMovies = false;
 
-  currentPage = 0;
+  currentPage = 1;
 
   searchControl = new FormControl('');
 
-  autoLoadMovies = false;
+  autoLoadMovies = true;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -57,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadMovies(true);
+    this.loadMovies(this.currentPage);
     if (this.user)
       this.userService
         .getUserData(this.user.userId)
@@ -72,13 +74,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this._layoutSubscriber) this._layoutSubscriber.unsubscribe();
   }
 
-  loadMovies(force: boolean = false) {
+  loadMovies(page: number) {
     if (this.loadingMovies) return;
-    if (!this.autoLoadMovies && !force) return;
     this.loadingMovies = true;
-    this.currentPage += 1;
     this.movieService
-      .getPopularMovies(this.currentPage)
+      .getPopularMovies(page)
       .pipe(first())
       .subscribe(
         (res) => {
@@ -97,7 +97,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       document.documentElement.offsetHeight;
     const max = (document.documentElement.scrollHeight * 90) / 100;
     if (pos >= max) {
-      this.loadMovies();
+      if (
+        !this.autoLoadMovies ||
+        this.loadingMovies ||
+        this.currentPage === MAX_PAGE_COUNT
+      )
+        return;
+      this.currentPage += 1;
+      this.loadMovies(this.currentPage);
     }
   }
 
