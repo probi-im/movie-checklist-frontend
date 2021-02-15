@@ -1,8 +1,11 @@
 mat-toolbar {
+  width: auto;
   position: fixed;
   top: 0;
+  right: 0;
   z-index: 2021;
   height: 4rem;
+  transition: 400ms left cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .brand {

@@ -2,6 +2,7 @@
   <mat-sidenav
     #drawer
     class="sidenav"
+    [style.width]="sidenavWidth + 'px'"
     fixedInViewport
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -25,7 +26,11 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <app-header (toggleAction)="drawer.toggle()"></app-header>
+    <app-header
+      [sidenavToggled]="drawer.opened"
+      [sidenavWidth]="sidenavWidth"
+      (toggleAction)="drawer.toggle()"
+    ></app-header>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

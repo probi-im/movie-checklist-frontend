@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService, UserService } from 'src/app/_services';
 
@@ -9,6 +9,8 @@ import { AuthenticationService, UserService } from 'src/app/_services';
 })
 export class HeaderComponent implements OnInit {
 
+  @Input() sidenavWidth = 200;
+  @Input() sidenavToggled = true;
   @Output() toggleAction = new EventEmitter();
 
   constructor(private authenticationService: AuthenticationService, private userService: UserService, private router: Router) { }
