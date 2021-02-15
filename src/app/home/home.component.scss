@@ -16,25 +16,16 @@
     height: 1rem;
   }
 }
-.search {
-  form {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
 
-    mat-form-field {
-      flex: 1;
-    }
-    button {
-      margin-left: 1rem;
-      line-height: 3rem;
-      font-size: 1.3rem;
-    }
+.search {
+  display: flex;
+
+  mat-form-field {
+    flex: 1;
+    margin-bottom: 1rem;
   }
 }
-// mat-grid-list {
-//   margin: 0 auto;
-// }
+
 mat-grid-tile {
   border-radius: 1rem;
   transition: 0.15s transform ease;

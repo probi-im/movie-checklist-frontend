@@ -33,7 +33,7 @@ export class UserService {
 
   watchMovie(userId: string, movieId: string) {
     return this.http
-      .post<UserData>(`${environment.apiUrl}/users/${userId}/watch`, {
+      .post<UserData>(`${environment.apiUrl}/users/${userId}/watchedMovies`, {
         movieId,
       })
       .pipe(
@@ -46,9 +46,7 @@ export class UserService {
 
   unwatchMovie(userId: string, movieId: string) {
     return this.http
-      .post<UserData>(`${environment.apiUrl}/users/${userId}/unwatch`, {
-        movieId,
-      })
+      .delete<UserData>(`${environment.apiUrl}/users/${userId}/watchedMovies/${movieId}`)
       .pipe(
         map((response) => {
           this.currentUserDataSubject.next(response);

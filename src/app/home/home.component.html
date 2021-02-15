@@ -11,20 +11,20 @@
     >
   </div>
   <div class="search">
-    <form (ngSubmit)="onSubmit()" #form="ngForm">
-      <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <input
-          matInput
-          [formControl]="searchControl"
-          type="text"
-          placeholder="Search"
-        />
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Search</mat-label>
+      <input
+        matInput
+        [formControl]="searchControl"
+        type="text"
+        placeholder="Search"
+      />
+    </mat-form-field>
+    <!-- <form (ngSubmit)="onSubmit()" #form="ngForm">
       <button mat-flat-button type="submit" [disabled]="!form.form.valid">
         Search
       </button>
-    </form>
+    </form> -->
   </div>
   <mat-spinner
     *ngIf="loadingUserData || firstLoadingMovies || refreshingMovieList"
