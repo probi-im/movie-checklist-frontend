@@ -20,19 +20,11 @@
         placeholder="Search"
       />
     </mat-form-field>
-    <!-- <form (ngSubmit)="onSubmit()" #form="ngForm">
-      <button mat-flat-button type="submit" [disabled]="!form.form.valid">
-        Search
-      </button>
-    </form> -->
   </div>
   <mat-spinner
     *ngIf="loadingUserData || firstLoadingMovies || refreshingMovieList"
     [color]="'accent'"
   ></mat-spinner>
-  <!-- <div *ngIf="loadingUserData || firstLoadingMovies" class="loading">
-    <h1>Loading your data...</h1>
-  </div> -->
   <mat-grid-list
     *ngIf="!loadingUserData && !firstLoadingMovies && !refreshingMovieList"
     [cols]="colNumber"

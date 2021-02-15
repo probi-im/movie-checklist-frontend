@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService, UserService } from 'src/app/_services';
 
@@ -9,6 +9,8 @@ import { AuthenticationService, UserService } from 'src/app/_services';
 })
 export class HeaderComponent implements OnInit {
 
+  @Output() toggleAction = new EventEmitter();
+
   constructor(private authenticationService: AuthenticationService, private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
@@ -18,6 +20,10 @@ export class HeaderComponent implements OnInit {
     this.authenticationService.logout();
     this.userService.clearData()
     this.router.navigate(['/login'])
+  }
+
+  toggle() {
+    this.toggleAction.emit();
   }
 
   public get user() {

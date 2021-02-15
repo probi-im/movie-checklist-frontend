@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/header/header.component';
 
+import { ErrorInterceptor, JwtInterceptor } from './_helpers';
+
 // Material Modules
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,9 +18,11 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ErrorInterceptor, JwtInterceptor } from './_helpers';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatListModule } from '@angular/material/list';
 
-const materialModules = [MatToolbarModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule];
+const materialModules = [MatToolbarModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSidenavModule];
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, RegisterComponent, LoginComponent],
@@ -28,6 +32,12 @@ const materialModules = [MatToolbarModule, MatIconModule, MatButtonModule, MatFo
     AppRoutingModule,
     BrowserAnimationsModule,
     ...materialModules,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
   ],
   providers: [
     {
